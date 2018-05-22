@@ -132,10 +132,14 @@ public class FXMLController implements Initializable {
             propietarios.getItems().add(conectarDB.agregarPropietariosDB().get(i));
             
         }
-        for (int i = 0; i < conectarDB.agregarCasasDB().size(); i++) {
-            casas.getItems().add(conectarDB.agregarCasasDB().get(i));
-            
-        }
+        
+        txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
+        txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
+        txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
+//        for (int i = 0; i < conectarDB.agregarCasasDB().size(); i++) {
+//            casas.getItems().add(conectarDB.agregarCasasDB().get(i));
+//            
+//        }
     }    
 
     
@@ -198,7 +202,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void btnSiguientePropietarioOnClick(ActionEvent event) {
-        if(posicionPropietarios != propietarios.getItems().size()){
+        if(posicionPropietarios != propietarios.getItems().size()-1){
             posicionPropietarios++;
         }
         
