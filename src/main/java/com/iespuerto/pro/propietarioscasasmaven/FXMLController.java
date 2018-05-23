@@ -25,7 +25,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 public class FXMLController implements Initializable {
-    
+
     private Label label;
     @FXML
     private Button btnModificarPropietario;
@@ -89,8 +89,7 @@ public class FXMLController implements Initializable {
     private Button btnPropietarioAceptar;
     @FXML
     private Button btnPropietarioCancelar;
-    
-    
+
     ConectarDB conectarDB;
     public ListView<Propietario> propietarios;
     public ListView<Casa> casas;
@@ -119,69 +118,88 @@ public class FXMLController implements Initializable {
     private CheckBox cbxAscensorCasa;
     @FXML
     private CheckBox cbxGarajeCasa;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conectarDB = new ConectarDB();
         propietarios = new ListView<Propietario>();
         casas = new ListView<Casa>();
         posicionPropietarios = 0;
-        posicionCasa=0;
+        posicionCasa = 0;
         System.out.println("\n\n\n\n\n");
- 
+
         extraerPropietarios();
         extraerCasas();
-        
+
         //conectarDB.agregarCasasDB();
-        txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
-        txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
-        txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
-        
-        txtID.setText(casas.getItems().get(posicionCasa).getId()+"");
-        txtMetros.setText(casas.getItems().get(posicionCasa).getMetros()+"");
-        txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion()+"");
-        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio()+"");
-        cbxAscensor.setSelected(casas.getItems().get(posicionCasa).isAscensor());
-        cbxGaraje.setSelected(casas.getItems().get(posicionCasa).isGaraje());
+//        txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
+//        txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
+//        txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
+//        
+//        txtID.setText(casas.getItems().get(posicionCasa).getId()+"");
+//        txtMetros.setText(casas.getItems().get(posicionCasa).getMetros()+"");
+//        txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion()+"");
+//        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio()+"");
+//        cbxAscensor.setSelected(casas.getItems().get(posicionCasa).isAscensor());
+//        cbxGaraje.setSelected(casas.getItems().get(posicionCasa).isGaraje());
 //        for (int i = 0; i < conectarDB.agregarCasasDB().size(); i++) {
 //            casas.getItems().add(conectarDB.agregarCasasDB().get(i));
 //            
 //        }
-    }    
+    }
 
     public void extraerCasas() {
         for (int i = 0; i < conectarDB.agregarCasasDB().size(); i++) {
             casas.getItems().add(conectarDB.agregarCasasDB().get(i));
-            
+
         }
+        mostrarCasas();
+
+    }
+
+    public void mostrarCasas() {
+        txtID.setText(casas.getItems().get(posicionCasa).getId() + "");
+        txtMetros.setText(casas.getItems().get(posicionCasa).getMetros() + "");
+        txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion() + "");
+        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio() + "");
+        cbxAscensor.setSelected(casas.getItems().get(posicionCasa).isAscensor());
+        cbxGaraje.setSelected(casas.getItems().get(posicionCasa).isGaraje());
     }
 
     public void extraerPropietarios() {
         for (int i = 0; i < conectarDB.agregarPropietariosDB().size(); i++) {
             propietarios.getItems().add(conectarDB.agregarPropietariosDB().get(i));
-            
+
         }
+        
     }
 
-    
+    public void mostrarPropietarios() {
+        txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
+        txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
+        txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
+    }
+
     boolean modificarPropietario = false;
+
+    String dniModificar="";
     @FXML
     private void btnModificarPropietarioOnClick(ActionEvent event) {
-        if(modificarPropietario == false){
-            modificarPropietario = true;
-            txtDNI.setDisable(false);
-            txtApellidos.setDisable(false);
-            txtNombre.setDisable(false);
-            btnPropietarioAceptar.setVisible(true);
-            btnPropietarioCancelar.setVisible(true);
-        }else{
-            modificarPropietario = false;
-            txtDNI.setDisable(true);
-            txtApellidos.setDisable(true);
-            txtNombre.setDisable(true);
-        }
+        modificarPropietario = true;
+        dniModificar = txtDNI.getText();
+        txtDNI.setDisable(false);
+        txtApellidos.setDisable(false);
+        txtNombre.setDisable(false);
+        btnPropietarioAceptar.setVisible(true);
+        btnPropietarioCancelar.setVisible(true);
+        btnAnteriorPropietario.setVisible(false);
+        btnSiguientePropietario.setVisible(false);
+        agregarPropietario = false;
+        borrarPropietario = false;
     }
 
-    boolean agregarPropietario =false;
+    boolean agregarPropietario = false;
+
     @FXML
     private void btnAgregarPropietarioOnClick(ActionEvent event) {
         txtDNI.setDisable(false);
@@ -193,143 +211,149 @@ public class FXMLController implements Initializable {
         txtApellidos.clear();
         txtNombre.clear();
         agregarPropietario = true;
+        modificarPropietario = false;
+        borrarPropietario = false;
     }
 
-    boolean borrarPropietario =false;
+    boolean borrarPropietario = false;
+
     @FXML
     private void btnBorrarPropietarioOnClick(ActionEvent event) {
         borrarPropietario = true;
         btnPropietarioAceptar.setVisible(true);
         btnPropietarioCancelar.setVisible(true);
+        agregarPropietario = false;
+        modificarPropietario = false;
+        btnAnteriorPropietario.setVisible(false);
+        btnSiguientePropietario.setVisible(false);
     }
 
     @FXML
     private void btnAnteriorPropietarioOnClick(ActionEvent event) {
-        if(posicionPropietarios != 0){
+        if (posicionPropietarios != 0) {
             posicionPropietarios--;
         }
-        
-        txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
-        txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
-        txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
-        
+
+        mostrarPropietarios();
+
         casasListView = new ListView<Casa>();
         for (int i = 0; i < propietarios.getItems().get(posicionPropietarios).getCasas().size(); i++) {
-                casasListView.getItems().add(propietarios.getItems().get(posicionPropietarios).getCasas().get(i));
-                
-            }
+            casasListView.getItems().add(propietarios.getItems().get(posicionPropietarios).getCasas().get(i));
+
+        }
     }
 
     @FXML
     private void btnSiguientePropietarioOnClick(ActionEvent event) {
-        if(posicionPropietarios != propietarios.getItems().size()-1){
+        if (posicionPropietarios != propietarios.getItems().size() - 1) {
             posicionPropietarios++;
         }
-        
-        txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
-        txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
-        txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
-        
+
+        mostrarPropietarios();
+
         casasListView = new ListView<Casa>();
         for (int i = 0; i < propietarios.getItems().get(posicionPropietarios).getCasas().size(); i++) {
-                casasListView.getItems().add(propietarios.getItems().get(posicionPropietarios).getCasas().get(i));
-                
-            }
+            casasListView.getItems().add(propietarios.getItems().get(posicionPropietarios).getCasas().get(i));
+
+        }
     }
 
     boolean modificarCasa = true;
+
     @FXML
     private void btnModificarCasaOnClick(ActionEvent event) {
-        if(modificarCasa == false){
+        if (modificarCasa == false) {
             modificarCasa = true;
             txtDireccion.setDisable(false);
-            txtMetros.setDisable(false);    
+            txtMetros.setDisable(false);
             txtPrecio.setDisable(false);
             btnCasaAceptar.setVisible(true);
             btnCasaCancelar.setVisible(true);
-        }else{
+        } else {
             modificarCasa = false;
             txtDireccion.setDisable(true);
-            txtMetros.setDisable(true);    
+            txtMetros.setDisable(true);
             txtPrecio.setDisable(true);
         }
     }
 
     ListView<HashMap<String, Casa>> casasPropietario;
     String operacion;
+
     @FXML
     private void btnPropietarioAceptarOnClick(ActionEvent event) {
-        
-        if(agregarPropietario){
+
+        if (agregarPropietario) {
             modificarPropietario = false;
             borrarPropietario = false;
-                   
+
+            //posicionPropietarios = propietarios.getItems().size() - 1;
             Propietario p = new Propietario();
-            String nombre=txtNombre.getText();
+            String nombre = txtNombre.getText();
             String apellidos = txtApellidos.getText();
-            String dni= txtDNI.getText();
+            String dni = txtDNI.getText();
             p.setNombre(nombre);
             p.setApellidos(apellidos);
             p.setDni(dni);
-            propietarios.getItems().add(p);
+            
+            conectarDB.agregarPropietario(dni,nombre,apellidos);
+            
+            propietarios = new ListView<Propietario>();
+            extraerPropietarios();
+            posicionPropietarios = propietarios.getItems().size() - 1;
+            mostrarPropietarios();
+            //propietarios.getItems().add(p);
             casasPropietario = new ListView<HashMap<String, Casa>>();
             casasPropietario.getItems().add(p.getCasasMap());
-            posicionPropietarios++;
+            //posicionPropietarios++;
             propietarios.refresh();
             System.out.println("propietario añadido");
             casasListView = new ListView<Casa>();
-            
-            if(!p.getCasas().isEmpty()){
+
+            if (!p.getCasas().isEmpty()) {
                 for (int i = 0; i < p.getCasas().size(); i++) {
                     casasListView.getItems().add(p.getCasas().get(i));
-                
+
                 }
             }
-            
-            
+
             agregarPropietario = false;
 //            operacion = "";
 //            
 //            conectarDB.operar(operacion);
         }
-        if(modificarPropietario){
+        if (modificarPropietario) {
             Propietario p = new Propietario();
-            String nombre=txtNombre.getText();
+            String nombre = txtNombre.getText();
             String apellidos = txtApellidos.getText();
-            String dni= txtDNI.getText();
+            String dni = txtDNI.getText();
+            
             p.setNombre(nombre);
             p.setApellidos(apellidos);
             p.setDni(dni);
+
+            conectarDB.modificarPropietario(dni, nombre, apellidos, dniModificar);
+            propietarios = new ListView<Propietario>();
+            extraerPropietarios();
+            mostrarPropietarios();
             
-            //propietarios.getItems().remove(posicionPropietarios);
-            propietarios.getItems().remove(posicionPropietarios);
-            propietarios.getItems().add(p);
-            System.out.println("propietario modificado");
-            
-//            operacion = "";
-//            conectarDB.operar(operacion);
             modificarPropietario = false;
+            btnAnteriorPropietario.setVisible(true);
+            btnSiguientePropietario.setVisible(true);
         }
-        if(borrarPropietario){
-            String dni= txtDNI.getText();
-            propietarios.getItems().remove(posicionPropietarios);
-            if(!propietarios.getItems().isEmpty()){
-                posicionPropietarios = 0;
-                txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
-                txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
-                txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
-            }else{
-                txtDNI.clear();
-                txtApellidos.clear();
-                txtNombre.clear();
-            }
+        if (borrarPropietario) {
+            String dni = txtDNI.getText();
+            conectarDB.borrarPropietario(dni);
+            propietarios = new ListView<Propietario>();
+            extraerPropietarios();
+            posicionPropietarios = propietarios.getItems().size() - 1;
+            mostrarPropietarios();
+            btnAnteriorPropietario.setVisible(true);
+            btnSiguientePropietario.setVisible(true);
             borrarPropietario = false;
-            
-            
-//            operacion = "";
-//            conectarDB.operar(operacion);
+
         }
-        
+
         deshabilitarPropietario();
     }
 
@@ -337,25 +361,28 @@ public class FXMLController implements Initializable {
     private void btnPropietarioCancelarOnClick(ActionEvent event) {
         deshabilitarPropietario();
     }
-    
-    public void deshabilitarPropietario(){
+
+    public void deshabilitarPropietario() {
         txtDNI.setDisable(true);
         txtApellidos.setDisable(true);
         txtNombre.setDisable(true);
         btnPropietarioAceptar.setVisible(false);
         btnPropietarioCancelar.setVisible(false);
+        btnAnteriorPropietario.setVisible(true);
+        btnSiguientePropietario.setVisible(true);
     }
 
     int posicionCasa;
+
     @FXML
     private void btnAnteriorCasaOnClick(ActionEvent event) {
-        if(posicionCasa != 0){
+        if (posicionCasa != 0) {
             posicionCasa--;
         }
-        txtID.setText(casas.getItems().get(posicionCasa).getId()+"");
+        txtID.setText(casas.getItems().get(posicionCasa).getId() + "");
         txtMetros.setText(casas.getItems().get(posicionCasa).getMetros() + "");
         txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion());
-        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio()+ "");
+        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio() + "");
         boolean tieneAscensor = casas.getItems().get(posicionCasa).isAscensor();
         cbxAscensor.setSelected(tieneAscensor);
         boolean tieneGaraje = casas.getItems().get(posicionCasa).isGaraje();
@@ -365,13 +392,13 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void btnSiguienteCasaOnClick(ActionEvent event) {
-        if(posicionCasa != casas.getItems().size()-1){
+        if (posicionCasa != casas.getItems().size() - 1) {
             posicionCasa++;
         }
-        txtID.setText(casas.getItems().get(posicionCasa).getId()+"");
+        txtID.setText(casas.getItems().get(posicionCasa).getId() + "");
         txtMetros.setText(casas.getItems().get(posicionCasa).getMetros() + "");
         txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion());
-        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio()+ "");
+        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio() + "");
         boolean tieneAscensor = casas.getItems().get(posicionCasa).isAscensor();
         cbxAscensor.setSelected(tieneAscensor);
         boolean tieneGaraje = casas.getItems().get(posicionCasa).isGaraje();
@@ -380,6 +407,7 @@ public class FXMLController implements Initializable {
     }
 
     boolean agregarCasa = false;
+
     @FXML
     private void btnAgregarCasaOnClick(ActionEvent event) {
         btnCasaAceptar.setVisible(true);
@@ -398,6 +426,7 @@ public class FXMLController implements Initializable {
     }
 
     boolean borrarCasa = false;
+
     @FXML
     private void btnBorrarCasaOnClick(ActionEvent event) {
         btnCasaAceptar.setVisible(true);
@@ -406,29 +435,40 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void btnCasaAceptarOnClick(ActionEvent event) {
-        if(agregarCasa){
-            
-            String direccion=txtDireccion.getText();
+        if (agregarCasa) {
+
+            String direccion = txtDireccion.getText();
             int metros = Integer.parseInt(txtMetros.getText());
             int precio = Integer.parseInt(txtPrecio.getText());
             //int id = Integer.parseInt(txtID.getText());
             boolean ascensor = cbxAscensor.isSelected();
             boolean garaje = cbxGaraje.isSelected();
             conectarDB.agregarCasa(direccion, metros, ascensor, garaje, precio);
-            Casa c = new Casa();
-            c.setId(conectarDB.getIdMaximo());
-            c.setAscensor(ascensor);
-            c.setDireccion(direccion);
-            c.setMetros(metros);
-            c.setPrecio(precio);
-            casas.getItems().add(c);
-            
+            casas = new ListView<Casa>();
+            extraerCasas();
+            posicionCasa = casas.getItems().size() - 1;
+            mostrarCasas();
+
         }
-        if(modificarCasa){
-            
+        if (modificarCasa) {
+            String direccion = txtDireccion.getText();
+            int metros = Integer.parseInt(txtMetros.getText());
+            int precio = Integer.parseInt(txtPrecio.getText());
+            int id = Integer.parseInt(txtID.getText());
+            boolean ascensor = cbxAscensor.isSelected();
+            boolean garaje = cbxGaraje.isSelected();
+            conectarDB.modificarCasa(id, direccion, metros, ascensor, garaje, precio);
+            casas = new ListView<Casa>();
+            extraerCasas();
+            mostrarCasas();
         }
-        if(borrarCasa){
-            
+        if (borrarCasa) {
+            int id = Integer.parseInt(txtID.getText());
+            conectarDB.borrarCasa(id);
+            casas = new ListView<Casa>();
+            extraerCasas();
+            posicionCasa = casas.getItems().size() - 1;
+            mostrarCasas();
         }
         deshabilitarCasa();
     }
@@ -437,13 +477,13 @@ public class FXMLController implements Initializable {
     private void btnCasaCancelarOnClick(ActionEvent event) {
         deshabilitarCasa();
     }
-    
-    public void deshabilitarCasa(){
+
+    public void deshabilitarCasa() {
         btnCasaAceptar.setVisible(false);
-        btnCasaCancelar.setVisible(false);        
-        txtID.setDisable(true);       
-        txtMetros.setDisable(true);        
-        txtDireccion.setDisable(true);        
+        btnCasaCancelar.setVisible(false);
+        txtID.setDisable(true);
+        txtMetros.setDisable(true);
+        txtDireccion.setDisable(true);
         txtPrecio.setDisable(true);
         cbxAscensor.setSelected(false);
         cbxGaraje.setSelected(false);
@@ -453,51 +493,51 @@ public class FXMLController implements Initializable {
     private void btnCancelarCasaPropietarioOnClick(ActionEvent event) {
     }
 
-    
     @FXML
     private void btnAceptarCasaPropietarioOnClick(ActionEvent event) {
-        if(agregarCasaPropietario){
+        if (agregarCasaPropietario) {
             int id = Integer.parseInt(txtIDCasa.getText());
             for (int i = 0; i < casas.getItems().size(); i++) {
-                if(casas.getItems().get(i).getId() == id){
+                if (casas.getItems().get(i).getId() == id) {
                     propietarios.getSelectionModel().getSelectedItem().getCasas().get(i);
-                    
+
                     propietarios.getItems().get(posicionPropietarios).add(casas.getItems().get(i));
                     //casasListView.getItems().add(e)
-                    txtMetros.setText(casasListView.getItems().get(i).getMetros()+"");
+                    txtMetros.setText(casasListView.getItems().get(i).getMetros() + "");
                 }
-                
+
             }
-            
-            
+
         }
-        if(borrarCasaPropietario){
-           
+        if (borrarCasaPropietario) {
+
             propietarios.getItems().get(posicionPropietarios).getCasas().remove(posCasasPropietario);
         }
     }
 
     boolean agregarCasaPropietario = false;
+
     @FXML
     private void btnAgregarCasaPropietarioOnClick(ActionEvent event) {
         txtDireccionCasa.clear();
         txtMetrosCasa.clear();
         txtPrecioCasa.clear();
         cbxAscensorCasa.setSelected(true);
-        
+
         txtIDCasa.clear();
         txtIDCasa.setDisable(false);
         txtDireccionCasa.setDisable(true);
         txtMetrosCasa.setDisable(true);
         txtPrecioCasa.setDisable(true);
         cbxAscensorCasa.setDisable(true);
-    
+
         btnCancelarCasaPropietario.setVisible(true);
         btnAceptarCasaPropietario.setVisible(true);
         agregarCasaPropietario = true;
     }
 
     boolean borrarCasaPropietario = false;
+
     @FXML
     private void btnBorrarCasaPropietarioOnClick(ActionEvent event) {
         btnCancelarCasaPropietario.setVisible(true);
@@ -509,70 +549,70 @@ public class FXMLController implements Initializable {
         borrarCasaPropietario = true;
     }
 
-    int posCasasPropietario=0;
+    int posCasasPropietario = 0;
     ListView<Casa> casasListView;
+
     @FXML
     private void btnAnteriorCasaPropietarioOnClick(ActionEvent event) {
-        if(posCasasPropietario>0){
+        if (posCasasPropietario > 0) {
             posCasasPropietario--;
         }
         int id = casasListView.getItems().get(posCasasPropietario).getId();
         String direccion = casasListView.getItems().get(posCasasPropietario).getDireccion();
         int metros = casasListView.getItems().get(posCasasPropietario).getMetros();
-        double precio = casasListView.getItems().get(posCasasPropietario).getPrecio();
+        int precio = (int) casasListView.getItems().get(posCasasPropietario).getPrecio();
         boolean ascensor = casasListView.getItems().get(posCasasPropietario).isAscensor();
         //casasArray.getItems().get(posCasasPropietario).isGaraje();
         //int id=casasPropietario.getItems().get(posCasasPropietario).get(this).getId();
-        txtIDCasa.setText(id+"");
+        txtIDCasa.setText(id + "");
         txtDireccionCasa.setText(direccion);
-        txtMetrosCasa.setText(metros + " m2");
-        txtPrecioCasa.setText(precio + " euros");
+        txtMetrosCasa.setText(metros + " ");
+        txtPrecioCasa.setText(precio + " ");
         cbxAscensorCasa.setSelected(ascensor);
-        
-        
+
     }
 
     @FXML
     private void btnSiguienteCasaPropietarioOnClick(ActionEvent event) {
-        if(posCasasPropietario<casasListView.getItems().size()){
+        if (posCasasPropietario < casasListView.getItems().size()) {
             posCasasPropietario++;
         }
         int id = casasListView.getItems().get(posCasasPropietario).getId();
         String direccion = casasListView.getItems().get(posCasasPropietario).getDireccion();
         int metros = casasListView.getItems().get(posCasasPropietario).getMetros();
-        double precio = casasListView.getItems().get(posCasasPropietario).getPrecio();
+        int precio = (int) casasListView.getItems().get(posCasasPropietario).getPrecio();
         boolean ascensor = casasListView.getItems().get(posCasasPropietario).isAscensor();
         //casasArray.getItems().get(posCasasPropietario).isGaraje();
         //int id=casasPropietario.getItems().get(posCasasPropietario).get(this).getId();
-        txtIDCasa.setText(id+"");
+        txtIDCasa.setText(id + "");
         txtDireccionCasa.setText(direccion);
-        txtMetrosCasa.setText(metros + " m2");
-        txtPrecioCasa.setText(precio + " euros");
+        txtMetrosCasa.setText(metros + " ");
+        txtPrecioCasa.setText(precio + " ");
         cbxAscensorCasa.setSelected(ascensor);
     }
 
     @FXML
     private void btnCancelarPropietarioCasa(ActionEvent event) {
-    
+
     }
 
     @FXML
     private void btnAceptarPropietarioCasaOnClick(ActionEvent event) {
-    
+
     }
 
     @FXML
     private void btnAnteriorPropietarioCasaOnClick(ActionEvent event) {
-    
+
     }
 
     @FXML
     private void btnSiguientePropietarioCasaOnClick(ActionEvent event) {
-    
+
     }
 
     @FXML
     private void btnAgregarPropietarioCasaOnClick(ActionEvent event) {
-    
+
     }
 }

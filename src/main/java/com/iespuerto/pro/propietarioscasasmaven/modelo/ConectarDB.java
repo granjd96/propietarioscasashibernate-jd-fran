@@ -178,7 +178,7 @@ public class ConectarDB {
         return arrayPropietarios;
     }
 
-    public void agregarUsuario(String dni, String nombre, String apellido){
+    public void agregarPropietario(String dni, String nombre, String apellido){
         try (Connection con = DriverManager.getConnection(jdbcUrl, usuario, clave);) {
             Statement st = con.createStatement();
             String comando = "INSERT PROPIETARIOS(ID_DNI_PROPIETARIOS, NOMBRE, APELLIDOS) values("
@@ -219,8 +219,72 @@ public class ConectarDB {
             Logger.getLogger(ConectarDB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-;
+
         
+    public void modificarPropietario(String dni, String nombre, String apellidos, String dniAntiguo){
+        try (Connection con = DriverManager.getConnection(jdbcUrl, usuario, clave);) {
+            Statement st = con.createStatement();
+            String comando = "UPDATE PROPIETARIOS SET "
+                + "ID_DNI_PROPIETARIOS = '"+dni+"', "
+                + "NOMBRE = '"+nombre+"', "
+                + "APELLIDOS = '"+apellidos+"' "
+                + "WHERE ID_DNI_PROPIETARIOS = '"+dniAntiguo+"'";
+            st.execute(comando);
+            st.close();
+        }   catch (SQLException ex) {
+            Logger.getLogger(ConectarDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void modificarCasa(int id, String direccion, int metros, boolean ascensor, boolean garaje, int precio){
+        int ascensorNum = 0;
+        int garajeNum = 0;
+        if(ascensor){
+            ascensorNum=1;
+        }
+        if(garaje){
+            garajeNum=1;
+        }
+        
+        try (Connection con = DriverManager.getConnection(jdbcUrl, usuario, clave);) {
+            Statement st = con.createStatement();
+            String comando = "UPDATE CASAS SET "
+                + "DIRECCION = '"+direccion+"', "
+                + "METROS = "+metros+", "
+                + "ASCENSOR = "+ascensorNum+", "
+                + "GARAJE = "+garajeNum+", "
+                + "PRECIO = "+precio+" "
+                + "WHERE ID_CASA = "+id;
+            st.execute(comando);
+            st.close();
+        }   catch (SQLException ex) {
+            Logger.getLogger(ConectarDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    public void borrarPropietario(String dni){
+        try (Connection con = DriverManager.getConnection(jdbcUrl, usuario, clave);) {
+            Statement st = con.createStatement();
+            String comando = "DELETE FROM PROPIETARIOS WHERE ID_DNI_PROPIETARIOS = '"+dni+"'";
+            st.execute(comando);
+            st.close();
+        }   catch (SQLException ex) {
+            Logger.getLogger(ConectarDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void borrarCasa(int id){
+        try (Connection con = DriverManager.getConnection(jdbcUrl, usuario, clave);) {
+            Statement st = con.createStatement();
+            String comando = "DELETE FROM CASAS WHERE ID_CASA = "+id;
+            st.execute(comando);
+            st.close();
+        }   catch (SQLException ex) {
+            Logger.getLogger(ConectarDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void operar(String operacion) {
         try (Connection con = DriverManager.getConnection(jdbcUrl, usuario, clave);) {
             Statement st = con.createStatement();
