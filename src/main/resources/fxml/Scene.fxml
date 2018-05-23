@@ -113,7 +113,7 @@
                               <TextField fx:id="txtApellidosPropietario" layoutX="14.0" layoutY="135.0" prefHeight="25.0" prefWidth="202.0" />
                            </children>
                         </AnchorPane>
-                        <TextField fx:id="txtID" layoutX="39.0" layoutY="75.0" prefHeight="25.0" prefWidth="88.0" />
+                        <TextField fx:id="txtID" disable="true" editable="false" layoutX="39.0" layoutY="75.0" prefHeight="25.0" prefWidth="88.0" />
                         <TextField fx:id="txtMetros" disable="true" layoutX="159.0" layoutY="75.0" prefHeight="25.0" prefWidth="88.0" />
                         <CheckBox fx:id="cbxAscensor" layoutX="39.0" layoutY="107.0" mnemonicParsing="false" text="Ascensor" />
                         <CheckBox fx:id="cbxGaraje" layoutX="160.0" layoutY="107.0" mnemonicParsing="false" text="Garaje" />

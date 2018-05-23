@@ -34,6 +34,8 @@ public class Casa implements Domicilios<Propietario, Casa> {
     private int planta;
     @XmlElement(name = "ascensor")
     private boolean ascensor;
+    @XmlElement(name = "garaje")
+    private boolean garaje;
     @XmlElement(name = "precio")
     private double precio;
     @XmlElementWrapper
@@ -44,12 +46,13 @@ public class Casa implements Domicilios<Propietario, Casa> {
     } //necesitamos un constructor por defecto para marshall
 
     public Casa(int id, String direccion, int metros, int planta, boolean ascensor,
-            double precio) {
+            boolean garaje, double precio) {
         this.id = id;
         this.direccion = direccion;
         this.metros = metros;
         this.planta = planta;
         this.ascensor = ascensor;
+        this.garaje = garaje;
         this.precio = precio;
         propietariosMap = new HashMap<>();
     }
@@ -152,6 +155,14 @@ public class Casa implements Domicilios<Propietario, Casa> {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isGaraje() {
+        return garaje;
+    }
+
+    public void setGaraje(boolean garaje) {
+        this.garaje = garaje;
     }
 
     
