@@ -91,6 +91,8 @@ public class Propietarios implements Serializable {
     public void setCasasList(List<Casas> casasList) {
         this.casasList = casasList;
     }
+    
+    
 
     @Override
     public int hashCode() {

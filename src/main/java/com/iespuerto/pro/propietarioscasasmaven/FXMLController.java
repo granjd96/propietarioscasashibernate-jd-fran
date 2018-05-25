@@ -1,10 +1,9 @@
 package com.iespuerto.pro.propietarioscasasmaven;
 
-import com.iespuerto.pro.propietarioscasasmaven.modelo.Casa;
+
 import com.iespuerto.pro.propietarioscasasmaven.modelo.Casas;
 import com.iespuerto.pro.propietarioscasasmaven.modelo.Conectar;
-import com.iespuerto.pro.propietarioscasasmaven.modelo.ConectarDB;
-import com.iespuerto.pro.propietarioscasasmaven.modelo.Propietario;
+
 import com.iespuerto.pro.propietarioscasasmaven.modelo.Propietarios;
 import java.net.URL;
 import java.sql.Connection;
@@ -25,6 +24,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -96,10 +96,10 @@ public class FXMLController implements Initializable {
     @FXML
     private Button btnPropietarioCancelar;
 
-    ConectarDB conectarDB;
-    public ListView<Propietario> propietarios;
+    //ConectarDB conectarDB;
+    //public ListView<Propietario> propietarios;
     public ListView<Propietarios> propietariosH;
-    public ListView<Casa> casas;
+    //public ListView<Casa> casas;
     public ListView<Casas> casasH;
     public int posicionPropietarios;
     @FXML
@@ -126,19 +126,20 @@ public class FXMLController implements Initializable {
     private CheckBox cbxAscensorCasa;
     @FXML
     private CheckBox cbxGarajeCasa;
+    @FXML
+    private MenuItem menuClose;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Conectar.crearFactory();
-        
-        Conectar.obtenerPropietarios();
-        Conectar.obtenerCasas();
+
+//        Conectar.obtenerPropietarios();
+//        Conectar.obtenerCasas();
         //Conectar.cerrarFactory();
-        
-        conectarDB = new ConectarDB();
-        propietarios = new ListView<Propietario>();
+        //conectarDB = new ConectarDB();
+        //propietarios = new ListView<Propietario>();
         propietariosH = new ListView<Propietarios>();
-        casas = new ListView<Casa>();
+        //casas = new ListView<Casa>();
         casasH = new ListView<Casas>();
         posicionPropietarios = 0;
         posicionCasa = 0;
@@ -149,44 +150,48 @@ public class FXMLController implements Initializable {
         mostrarPropietarios();
         mostrarCasas();
 
-
     }
 
     public void extraerCasas() {
-        for (int i = 0; i < conectarDB.agregarCasasDB().size(); i++) {
-            casas.getItems().add(conectarDB.agregarCasasDB().get(i));
+        for (int i = 0; i < Conectar.obtenerCasas().size(); i++) {
+            //casas.getItems().add(conectarDB.agregarCasasDB().get(i));
             casasH.getItems().add(Conectar.obtenerCasas().get(i));
+            //System.out.println(casasH.getItems().get(i).getPrecio());
         }
         mostrarCasas();
 
     }
 
     public void mostrarCasas() {
-        txtID.setText(casas.getItems().get(posicionCasa).getId() + "");
-        txtMetros.setText(casas.getItems().get(posicionCasa).getMetros() + "");
-        txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion() + "");
-        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio() + "");
-        cbxAscensor.setSelected(casas.getItems().get(posicionCasa).isAscensor());
-        cbxGaraje.setSelected(casas.getItems().get(posicionCasa).isGaraje());
+        txtID.setText(casasH.getItems().get(posicionCasa).getIdCasa() + "");
+        txtMetros.setText(casasH.getItems().get(posicionCasa).getMetros() + "");
+        txtDireccion.setText(casasH.getItems().get(posicionCasa).getDireccion() + "");
+        txtPrecio.setText(casasH.getItems().get(posicionCasa).getPrecio() + "");
+        cbxAscensor.setSelected(casasH.getItems().get(posicionCasa).getAscensor());
+        cbxGaraje.setSelected(casasH.getItems().get(posicionCasa).getGaraje());
     }
 
     public void extraerPropietarios() {
-        for (int i = 0; i < conectarDB.agregarPropietariosDB().size(); i++) {
-            propietarios.getItems().add(conectarDB.agregarPropietariosDB().get(i));
-            propietariosH.getItems().add(Conectar.obtenerPropietarios().get(i));
+        ArrayList<Propietarios> obtPropietarios = new ArrayList<Propietarios>();
+        obtPropietarios = Conectar.obtenerPropietarios();
+        for (int i = 0; i < obtPropietarios.size(); i++) {
+            //propietarios.getItems().add(conectarDB.agregarPropietariosDB().get(i));
+            propietariosH.getItems().add(obtPropietarios.get(i));
         }
-        
+
     }
 
     public void mostrarPropietarios() {
-        txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
-        txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
-        txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
+        txtDNI.setText(propietariosH.getItems().get(posicionPropietarios).getIdDniPropietarios());
+        txtApellidos.setText(propietariosH.getItems().get(posicionPropietarios).getApellidos());
+        txtNombre.setText(propietariosH.getItems().get(posicionPropietarios).getNombre());
+
     }
 
     boolean modificarPropietario = false;
 
-    String dniModificar="";
+    String dniModificar = "";
+
     @FXML
     private void btnModificarPropietarioOnClick(ActionEvent event) {
         modificarPropietario = true;
@@ -240,48 +245,43 @@ public class FXMLController implements Initializable {
 
         mostrarPropietarios();
 
-        casasListView = new ListView<Casa>();
-        for (int i = 0; i < propietarios.getItems().get(posicionPropietarios).getCasas().size(); i++) {
-            casasListView.getItems().add(propietarios.getItems().get(posicionPropietarios).getCasas().get(i));
-
-        }
+//        casasListView = new ListView<Casas>();
+//        for (int i = 0; i < propietariosH.getItems().get(posicionPropietarios).getCasasList().size(); i++) {
+//            casasListView.getItems().add(propietariosH.getItems().get(posicionPropietarios).getCasasList().get(i));
+//
+//        }
     }
 
     @FXML
     private void btnSiguientePropietarioOnClick(ActionEvent event) {
-        if (posicionPropietarios != propietarios.getItems().size() - 1) {
+        if (posicionPropietarios < propietariosH.getItems().size() - 1) {
             posicionPropietarios++;
         }
 
         mostrarPropietarios();
 
-        casasListView = new ListView<Casa>();
-        for (int i = 0; i < propietarios.getItems().get(posicionPropietarios).getCasas().size(); i++) {
-            casasListView.getItems().add(propietarios.getItems().get(posicionPropietarios).getCasas().get(i));
-
-        }
+//        casasListView = new ListView<Casas>();
+//        for (int i = 0; i < propietariosH.getItems().get(posicionPropietarios).getCasasList().size(); i++) {
+//            casasListView.getItems().add(propietariosH.getItems().get(posicionPropietarios).getCasasList().get(i));
+//
+//        }
     }
 
-    boolean modificarCasa = true;
+    boolean modificarCasa = false;
 
     @FXML
     private void btnModificarCasaOnClick(ActionEvent event) {
-        if (modificarCasa == false) {
-            modificarCasa = true;
-            txtDireccion.setDisable(false);
-            txtMetros.setDisable(false);
-            txtPrecio.setDisable(false);
-            btnCasaAceptar.setVisible(true);
-            btnCasaCancelar.setVisible(true);
-        } else {
-            modificarCasa = false;
-            txtDireccion.setDisable(true);
-            txtMetros.setDisable(true);
-            txtPrecio.setDisable(true);
-        }
+
+        modificarCasa = true;
+        txtDireccion.setDisable(false);
+        txtMetros.setDisable(false);
+        txtPrecio.setDisable(false);
+        btnCasaAceptar.setVisible(true);
+        btnCasaCancelar.setVisible(true);
+
     }
 
-    ListView<HashMap<String, Casa>> casasPropietario;
+    //ListView<HashMap<String, Casa>> casasPropietario;
     String operacion;
 
     @FXML
@@ -292,65 +292,67 @@ public class FXMLController implements Initializable {
             borrarPropietario = false;
 
             //posicionPropietarios = propietarios.getItems().size() - 1;
-            Propietario p = new Propietario();
+            //Propietarios p = new Propietarios();
             String nombre = txtNombre.getText();
             String apellidos = txtApellidos.getText();
             String dni = txtDNI.getText();
-            p.setNombre(nombre);
-            p.setApellidos(apellidos);
-            p.setDni(dni);
-            
-            conectarDB.agregarPropietario(dni,nombre,apellidos);
-            
-            propietarios = new ListView<Propietario>();
+//            p.setNombre(nombre);
+//            p.setApellidos(apellidos);
+//            p.setIdDniPropietarios(dni);
+
+            //conectarDB.agregarPropietario(dni,nombre,apellidos);
+            Conectar.agregarPropietarios(dni, nombre, apellidos);
+            propietariosH = new ListView<Propietarios>();
+
             extraerPropietarios();
-            posicionPropietarios = propietarios.getItems().size() - 1;
+            posicionPropietarios = propietariosH.getItems().size() - 1;
             mostrarPropietarios();
             //propietarios.getItems().add(p);
-            casasPropietario = new ListView<HashMap<String, Casa>>();
-            casasPropietario.getItems().add(p.getCasasMap());
+            //casasPropietario = new ListView<HashMap<String, Casa>>();
+            //casasPropietario.getItems().add(p.getCasasList());
             //posicionPropietarios++;
-            propietarios.refresh();
+            //propietariosH.refresh();
             System.out.println("propietario añadido");
-            casasListView = new ListView<Casa>();
+            casasListView = new ListView<Casas>();
 
-            if (!p.getCasas().isEmpty()) {
-                for (int i = 0; i < p.getCasas().size(); i++) {
-                    casasListView.getItems().add(p.getCasas().get(i));
-
-                }
-            }
-
+//            if (!p.getCasasList().isEmpty()) {
+//                for (int i = 0; i < p.getCasasList().size(); i++) {
+//                    casasListView.getItems().add(p.getCasasList().get(i));
+//
+//                }
+//            }
             agregarPropietario = false;
 //            operacion = "";
 //            
 //            conectarDB.operar(operacion);
         }
         if (modificarPropietario) {
-            Propietario p = new Propietario();
+            Propietarios p = new Propietarios();
             String nombre = txtNombre.getText();
             String apellidos = txtApellidos.getText();
             String dni = txtDNI.getText();
-            
+
             p.setNombre(nombre);
             p.setApellidos(apellidos);
-            p.setDni(dni);
+            p.getIdDniPropietarios();
 
-            conectarDB.modificarPropietario(dni, nombre, apellidos, dniModificar);
-            propietarios = new ListView<Propietario>();
+            //conectarDB.modificarPropietario(dni, nombre, apellidos, dniModificar);
+            Conectar.modificarPropietario(dni, nombre, apellidos, dniModificar);
+            propietariosH = new ListView<Propietarios>();
             extraerPropietarios();
             mostrarPropietarios();
-            
+
             modificarPropietario = false;
             btnAnteriorPropietario.setVisible(true);
             btnSiguientePropietario.setVisible(true);
         }
         if (borrarPropietario) {
             String dni = txtDNI.getText();
-            conectarDB.borrarPropietario(dni);
-            propietarios = new ListView<Propietario>();
+            //conectarDB.borrarPropietario(dni);
+            Conectar.borrarPropietario(dni);
+            propietariosH = new ListView<Propietarios>();
             extraerPropietarios();
-            posicionPropietarios = propietarios.getItems().size() - 1;
+            posicionPropietarios = propietariosH.getItems().size() - 1;
             mostrarPropietarios();
             btnAnteriorPropietario.setVisible(true);
             btnSiguientePropietario.setVisible(true);
@@ -359,6 +361,7 @@ public class FXMLController implements Initializable {
         }
 
         deshabilitarPropietario();
+
     }
 
     @FXML
@@ -383,29 +386,29 @@ public class FXMLController implements Initializable {
         if (posicionCasa != 0) {
             posicionCasa--;
         }
-        txtID.setText(casas.getItems().get(posicionCasa).getId() + "");
-        txtMetros.setText(casas.getItems().get(posicionCasa).getMetros() + "");
-        txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion());
-        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio() + "");
-        boolean tieneAscensor = casas.getItems().get(posicionCasa).isAscensor();
+        txtID.setText(casasH.getItems().get(posicionCasa).getIdCasa() + "");
+        txtMetros.setText(casasH.getItems().get(posicionCasa).getMetros() + "");
+        txtDireccion.setText(casasH.getItems().get(posicionCasa).getDireccion());
+        txtPrecio.setText(casasH.getItems().get(posicionCasa).getPrecio() + "");
+        boolean tieneAscensor = casasH.getItems().get(posicionCasa).getAscensor();
         cbxAscensor.setSelected(tieneAscensor);
-        boolean tieneGaraje = casas.getItems().get(posicionCasa).isGaraje();
+        boolean tieneGaraje = casasH.getItems().get(posicionCasa).getGaraje();
         cbxGaraje.setSelected(tieneGaraje);
 
     }
 
     @FXML
     private void btnSiguienteCasaOnClick(ActionEvent event) {
-        if (posicionCasa != casas.getItems().size() - 1) {
+        if (posicionCasa < casasH.getItems().size() - 1) {
             posicionCasa++;
         }
-        txtID.setText(casas.getItems().get(posicionCasa).getId() + "");
-        txtMetros.setText(casas.getItems().get(posicionCasa).getMetros() + "");
-        txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion());
-        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio() + "");
-        boolean tieneAscensor = casas.getItems().get(posicionCasa).isAscensor();
+        txtID.setText(casasH.getItems().get(posicionCasa).getIdCasa() + "");
+        txtMetros.setText(casasH.getItems().get(posicionCasa).getMetros() + "");
+        txtDireccion.setText(casasH.getItems().get(posicionCasa).getDireccion());
+        txtPrecio.setText(casasH.getItems().get(posicionCasa).getPrecio() + "");
+        boolean tieneAscensor = casasH.getItems().get(posicionCasa).getAscensor();
         cbxAscensor.setSelected(tieneAscensor);
-        boolean tieneGaraje = casas.getItems().get(posicionCasa).isGaraje();
+        boolean tieneGaraje = casasH.getItems().get(posicionCasa).getGaraje();
         cbxGaraje.setSelected(tieneGaraje);
 
     }
@@ -447,10 +450,11 @@ public class FXMLController implements Initializable {
             //int id = Integer.parseInt(txtID.getText());
             boolean ascensor = cbxAscensor.isSelected();
             boolean garaje = cbxGaraje.isSelected();
-            conectarDB.agregarCasa(direccion, metros, ascensor, garaje, precio);
-            casas = new ListView<Casa>();
+            //conectarDB.agregarCasa(direccion, metros, ascensor, garaje, precio);
+            Conectar.agregarCasas(direccion, metros, ascensor, garaje, precio);
+            casasH = new ListView<Casas>();
             extraerCasas();
-            posicionCasa = casas.getItems().size() - 1;
+            posicionCasa = casasH.getItems().size() - 1;
             mostrarCasas();
 
         }
@@ -461,17 +465,19 @@ public class FXMLController implements Initializable {
             int id = Integer.parseInt(txtID.getText());
             boolean ascensor = cbxAscensor.isSelected();
             boolean garaje = cbxGaraje.isSelected();
-            conectarDB.modificarCasa(id, direccion, metros, ascensor, garaje, precio);
-            casas = new ListView<Casa>();
+            //conectarDB.modificarCasa(id, direccion, metros, ascensor, garaje, precio);
+            Conectar.modificarCasa(id, direccion, metros, ascensor, garaje, precio);
+            casasH = new ListView<Casas>();
             extraerCasas();
             mostrarCasas();
         }
         if (borrarCasa) {
             int id = Integer.parseInt(txtID.getText());
-            conectarDB.borrarCasa(id);
-            casas = new ListView<Casa>();
+            //conectarDB.borrarCasa(id);
+            Conectar.borrarCasa(id);
+            casasH = new ListView<Casas>();
             extraerCasas();
-            posicionCasa = casas.getItems().size() - 1;
+            posicionCasa = casasH.getItems().size() - 1;
             mostrarCasas();
         }
         deshabilitarCasa();
@@ -501,13 +507,13 @@ public class FXMLController implements Initializable {
     private void btnAceptarCasaPropietarioOnClick(ActionEvent event) {
         if (agregarCasaPropietario) {
             int id = Integer.parseInt(txtIDCasa.getText());
-            for (int i = 0; i < casas.getItems().size(); i++) {
-                if (casas.getItems().get(i).getId() == id) {
-                    propietarios.getSelectionModel().getSelectedItem().getCasas().get(i);
+            for (int i = 0; i < casasH.getItems().size(); i++) {
+                if (casasH.getItems().get(i).getIdCasa() == id) {
+                    propietariosH.getSelectionModel().getSelectedItem().getCasasList().get(i);
 
-                    propietarios.getItems().get(posicionPropietarios).add(casas.getItems().get(i));
+                    //propietariosH.getItems().get(posicionPropietarios).add(casas.getItems().get(i));
                     //casasListView.getItems().add(e)
-                    txtMetros.setText(casasListView.getItems().get(i).getMetros() + "");
+                    //txtMetros.setText(casasListView.getItems().get(i).getMetros() + "");
                 }
 
             }
@@ -515,7 +521,7 @@ public class FXMLController implements Initializable {
         }
         if (borrarCasaPropietario) {
 
-            propietarios.getItems().get(posicionPropietarios).getCasas().remove(posCasasPropietario);
+            propietariosH.getItems().get(posicionPropietarios).getCasasList().remove(posCasasPropietario);
         }
     }
 
@@ -554,25 +560,25 @@ public class FXMLController implements Initializable {
     }
 
     int posCasasPropietario = 0;
-    ListView<Casa> casasListView;
+    ListView<Casas> casasListView;
 
     @FXML
     private void btnAnteriorCasaPropietarioOnClick(ActionEvent event) {
         if (posCasasPropietario > 0) {
             posCasasPropietario--;
         }
-        int id = casasListView.getItems().get(posCasasPropietario).getId();
-        String direccion = casasListView.getItems().get(posCasasPropietario).getDireccion();
-        int metros = casasListView.getItems().get(posCasasPropietario).getMetros();
-        int precio = (int) casasListView.getItems().get(posCasasPropietario).getPrecio();
-        boolean ascensor = casasListView.getItems().get(posCasasPropietario).isAscensor();
-        //casasArray.getItems().get(posCasasPropietario).isGaraje();
-        //int id=casasPropietario.getItems().get(posCasasPropietario).get(this).getId();
-        txtIDCasa.setText(id + "");
-        txtDireccionCasa.setText(direccion);
-        txtMetrosCasa.setText(metros + " ");
-        txtPrecioCasa.setText(precio + " ");
-        cbxAscensorCasa.setSelected(ascensor);
+//        int id = casasListView.getItems().get(posCasasPropietario).getId();
+//        String direccion = casasListView.getItems().get(posCasasPropietario).getDireccion();
+//        int metros = casasListView.getItems().get(posCasasPropietario).getMetros();
+//        int precio = (int) casasListView.getItems().get(posCasasPropietario).getPrecio();
+//        boolean ascensor = casasListView.getItems().get(posCasasPropietario).isAscensor();
+//        //casasArray.getItems().get(posCasasPropietario).isGaraje();
+//        //int id=casasPropietario.getItems().get(posCasasPropietario).get(this).getId();
+//        txtIDCasa.setText(id + "");
+//        txtDireccionCasa.setText(direccion);
+//        txtMetrosCasa.setText(metros + " ");
+//        txtPrecioCasa.setText(precio + " ");
+//        cbxAscensorCasa.setSelected(ascensor);
 
     }
 
@@ -581,18 +587,18 @@ public class FXMLController implements Initializable {
         if (posCasasPropietario < casasListView.getItems().size()) {
             posCasasPropietario++;
         }
-        int id = casasListView.getItems().get(posCasasPropietario).getId();
-        String direccion = casasListView.getItems().get(posCasasPropietario).getDireccion();
-        int metros = casasListView.getItems().get(posCasasPropietario).getMetros();
-        int precio = (int) casasListView.getItems().get(posCasasPropietario).getPrecio();
-        boolean ascensor = casasListView.getItems().get(posCasasPropietario).isAscensor();
-        //casasArray.getItems().get(posCasasPropietario).isGaraje();
-        //int id=casasPropietario.getItems().get(posCasasPropietario).get(this).getId();
-        txtIDCasa.setText(id + "");
-        txtDireccionCasa.setText(direccion);
-        txtMetrosCasa.setText(metros + " ");
-        txtPrecioCasa.setText(precio + " ");
-        cbxAscensorCasa.setSelected(ascensor);
+//        int id = casasListView.getItems().get(posCasasPropietario).getId();
+//        String direccion = casasListView.getItems().get(posCasasPropietario).getDireccion();
+//        int metros = casasListView.getItems().get(posCasasPropietario).getMetros();
+//        int precio = (int) casasListView.getItems().get(posCasasPropietario).getPrecio();
+//        boolean ascensor = casasListView.getItems().get(posCasasPropietario).isAscensor();
+//        //casasArray.getItems().get(posCasasPropietario).isGaraje();
+//        //int id=casasPropietario.getItems().get(posCasasPropietario).get(this).getId();
+//        txtIDCasa.setText(id + "");
+//        txtDireccionCasa.setText(direccion);
+//        txtMetrosCasa.setText(metros + " ");
+//        txtPrecioCasa.setText(precio + " ");
+//        cbxAscensorCasa.setSelected(ascensor);
     }
 
     @FXML
@@ -618,5 +624,12 @@ public class FXMLController implements Initializable {
     @FXML
     private void btnAgregarPropietarioCasaOnClick(ActionEvent event) {
 
+    }
+
+    @FXML
+    private void Cerrar(ActionEvent event) {
+        Conectar.cerrarFactory();
+        System.exit(0);
+        
     }
 }

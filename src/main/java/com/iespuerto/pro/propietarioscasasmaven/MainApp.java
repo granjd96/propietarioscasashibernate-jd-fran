@@ -1,5 +1,6 @@
 package com.iespuerto.pro.propietarioscasasmaven;
 
+import com.iespuerto.pro.propietarioscasasmaven.modelo.Conectar;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,12 @@ public class MainApp extends Application {
         stage.setTitle("JavaFX and Maven");
         stage.setScene(scene);
         stage.show();
+        
+        stage.setOnCloseRequest(p->{
+            Conectar.cerrarFactory();
+        }
+        
+        );
     }
 
     /**
@@ -32,6 +39,7 @@ public class MainApp extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        
     }
 
 }

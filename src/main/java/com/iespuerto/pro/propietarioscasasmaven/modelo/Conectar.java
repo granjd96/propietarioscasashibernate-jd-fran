@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 /**
@@ -33,7 +34,7 @@ public class Conectar {
     }
 
     public static ArrayList<Propietarios> obtenerPropietarios() {
-        ArrayList<Propietarios> propietarios = new ArrayList<>();
+        ArrayList<Propietarios> propietarios = new ArrayList<Propietarios>();
         EntityManager em = Conectar.nuevaEntityManager();
         List<Propietarios> ps = em.createNamedQuery("Propietarios.findAll", Propietarios.class)
                 .getResultList();
@@ -45,10 +46,12 @@ public class Conectar {
 
         System.out.println("Array");
         for (int i = 0; i < propietarios.size(); i++) {
-            System.out.println(propietarios.get(i).getNombre() + "" + propietarios.get(i).getApellidos() + " - " + propietarios.get(i).getIdDniPropietarios());
+            System.out.println(propietarios.get(i).getNombre() + " " + propietarios.get(i).getApellidos() + " - " + propietarios.get(i).getIdDniPropietarios());
 
         }
+        
         em.close();
+        
         return propietarios;
     }
 
@@ -104,12 +107,21 @@ public class Conectar {
     
     public static void agregarPropietarios(String dni, String nombre, String apellidos){
         EntityManager em = Conectar.nuevaEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
         String comando = "INSERT PROPIETARIOS(ID_DNI_PROPIETARIOS, NOMBRE, APELLIDOS) values("
                     + "'"+dni+"',"
                     + "'"+nombre+"',"
                     + "'"+apellidos+"')";
-        em.createNativeQuery(comando, Propietarios.class);
+        em.createNativeQuery(comando).executeUpdate();
+        et.commit();
+        
+        for (int i = 0; i < Conectar.obtenerPropietarios().size(); i++) {
+            System.out.println(Conectar.obtenerPropietarios().get(i).getNombre());
+            
+        }
         em.close();
+        
     }
     
     public static void agregarCasas(String direccion, int metros, boolean ascensor, boolean garaje, int precio){
@@ -124,6 +136,8 @@ public class Conectar {
             garajeNum=1;
         }
         EntityManager em = Conectar.nuevaEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
         String comando = "INSERT CASAS(ID_CASA,DIRECCION,METROS,ASCENSOR,GARAJE,PRECIO) values("
                     + id+","
                     + "'"+direccion+"',"
@@ -131,18 +145,22 @@ public class Conectar {
                     + ascensorNum+","
                     + garajeNum+","
                     + precio+")";
-        em.createNativeQuery(comando, Casas.class);
+        em.createNativeQuery(comando).executeUpdate();
+        et.commit();
         em.close();
     }
     
     public static void modificarPropietario(String dni, String nombre, String apellidos, String dniAntiguo){
         EntityManager em = Conectar.nuevaEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
         String comando = "UPDATE PROPIETARIOS SET "
                 + "ID_DNI_PROPIETARIOS = '"+dni+"', "
                 + "NOMBRE = '"+nombre+"', "
                 + "APELLIDOS = '"+apellidos+"' "
                 + "WHERE ID_DNI_PROPIETARIOS = '"+dniAntiguo+"'";
-        em.createNativeQuery(comando, Propietarios.class);
+        em.createNativeQuery(comando, Propietarios.class).executeUpdate();
+        et.commit();
         em.close();
     }
     
@@ -164,22 +182,30 @@ public class Conectar {
                 + "WHERE ID_CASA = "+id;
         
         EntityManager em = Conectar.nuevaEntityManager();
-        
-        em.createNativeQuery(comando, Casas.class);
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        em.createNativeQuery(comando, Casas.class).executeUpdate();
+        et.commit();
         em.close();
     }
     
     public static void borrarPropietario(String dni){
         EntityManager em = Conectar.nuevaEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
         String comando = "DELETE FROM PROPIETARIOS WHERE ID_DNI_PROPIETARIOS = '"+dni+"'";
-        em.createNativeQuery(comando, Propietarios.class);
+        em.createNativeQuery(comando, Propietarios.class).executeUpdate();
+        et.commit();
         em.close();
      }
     
     public static void borrarCasa(int id){
         EntityManager em = Conectar.nuevaEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
         String comando = "DELETE FROM CASAS WHERE ID_CASA = "+id;
-        em.createNativeQuery(comando, Casas.class);
+        em.createNativeQuery(comando).executeUpdate();
+        et.commit();
         em.close();
     }
 }
