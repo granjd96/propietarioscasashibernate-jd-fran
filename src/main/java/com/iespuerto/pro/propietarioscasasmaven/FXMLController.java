@@ -1,8 +1,11 @@
 package com.iespuerto.pro.propietarioscasasmaven;
 
 import com.iespuerto.pro.propietarioscasasmaven.modelo.Casa;
+import com.iespuerto.pro.propietarioscasasmaven.modelo.Casas;
+import com.iespuerto.pro.propietarioscasasmaven.modelo.Conectar;
 import com.iespuerto.pro.propietarioscasasmaven.modelo.ConectarDB;
 import com.iespuerto.pro.propietarioscasasmaven.modelo.Propietario;
+import com.iespuerto.pro.propietarioscasasmaven.modelo.Propietarios;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +26,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class FXMLController implements Initializable {
 
@@ -92,7 +98,9 @@ public class FXMLController implements Initializable {
 
     ConectarDB conectarDB;
     public ListView<Propietario> propietarios;
+    public ListView<Propietarios> propietariosH;
     public ListView<Casa> casas;
+    public ListView<Casas> casasH;
     public int posicionPropietarios;
     @FXML
     private Button btnCasaAceptar;
@@ -121,37 +129,33 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Conectar.crearFactory();
+        
+        Conectar.obtenerPropietarios();
+        Conectar.obtenerCasas();
+        //Conectar.cerrarFactory();
+        
         conectarDB = new ConectarDB();
         propietarios = new ListView<Propietario>();
+        propietariosH = new ListView<Propietarios>();
         casas = new ListView<Casa>();
+        casasH = new ListView<Casas>();
         posicionPropietarios = 0;
         posicionCasa = 0;
         System.out.println("\n\n\n\n\n");
 
         extraerPropietarios();
         extraerCasas();
+        mostrarPropietarios();
+        mostrarCasas();
 
-        //conectarDB.agregarCasasDB();
-//        txtDNI.setText(propietarios.getItems().get(posicionPropietarios).getDni());
-//        txtApellidos.setText(propietarios.getItems().get(posicionPropietarios).getApellidos());
-//        txtNombre.setText(propietarios.getItems().get(posicionPropietarios).getNombre());
-//        
-//        txtID.setText(casas.getItems().get(posicionCasa).getId()+"");
-//        txtMetros.setText(casas.getItems().get(posicionCasa).getMetros()+"");
-//        txtDireccion.setText(casas.getItems().get(posicionCasa).getDireccion()+"");
-//        txtPrecio.setText(casas.getItems().get(posicionCasa).getPrecio()+"");
-//        cbxAscensor.setSelected(casas.getItems().get(posicionCasa).isAscensor());
-//        cbxGaraje.setSelected(casas.getItems().get(posicionCasa).isGaraje());
-//        for (int i = 0; i < conectarDB.agregarCasasDB().size(); i++) {
-//            casas.getItems().add(conectarDB.agregarCasasDB().get(i));
-//            
-//        }
+
     }
 
     public void extraerCasas() {
         for (int i = 0; i < conectarDB.agregarCasasDB().size(); i++) {
             casas.getItems().add(conectarDB.agregarCasasDB().get(i));
-
+            casasH.getItems().add(Conectar.obtenerCasas().get(i));
         }
         mostrarCasas();
 
@@ -169,7 +173,7 @@ public class FXMLController implements Initializable {
     public void extraerPropietarios() {
         for (int i = 0; i < conectarDB.agregarPropietariosDB().size(); i++) {
             propietarios.getItems().add(conectarDB.agregarPropietariosDB().get(i));
-
+            propietariosH.getItems().add(Conectar.obtenerPropietarios().get(i));
         }
         
     }
