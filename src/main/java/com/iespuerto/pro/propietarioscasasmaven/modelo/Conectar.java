@@ -36,6 +36,8 @@ public class Conectar {
     public static ArrayList<Propietarios> obtenerPropietarios() {
         ArrayList<Propietarios> propietarios = new ArrayList<Propietarios>();
         EntityManager em = Conectar.nuevaEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
         List<Propietarios> ps = em.createNamedQuery("Propietarios.findAll", Propietarios.class)
                 .getResultList();
         System.out.println("Lista");
@@ -49,7 +51,7 @@ public class Conectar {
             System.out.println(propietarios.get(i).getNombre() + " " + propietarios.get(i).getApellidos() + " - " + propietarios.get(i).getIdDniPropietarios());
 
         }
-        
+        et.commit();
         em.close();
         
         return propietarios;
@@ -58,6 +60,8 @@ public class Conectar {
     public static ArrayList<Casas> obtenerCasas() {
         ArrayList<Casas> casas = new ArrayList<>();
         EntityManager em = Conectar.nuevaEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
         List<Casas> ps = em.createNamedQuery("Casas.findAll", Casas.class)
                 .getResultList();
         System.out.println("Lista");
@@ -72,6 +76,7 @@ public class Conectar {
         for (int i = 0; i < casas.size(); i++) {
             System.out.println(casas.get(i).getIdCasa()+" - "+casas.get(i).getDireccion());
         }
+        et.commit();
         em.close();
         return casas;
     }
@@ -159,7 +164,7 @@ public class Conectar {
                 + "NOMBRE = '"+nombre+"', "
                 + "APELLIDOS = '"+apellidos+"' "
                 + "WHERE ID_DNI_PROPIETARIOS = '"+dniAntiguo+"'";
-        em.createNativeQuery(comando, Propietarios.class).executeUpdate();
+        em.createNativeQuery(comando).executeUpdate();
         et.commit();
         em.close();
     }
@@ -184,7 +189,7 @@ public class Conectar {
         EntityManager em = Conectar.nuevaEntityManager();
         EntityTransaction et = em.getTransaction();
         et.begin();
-        em.createNativeQuery(comando, Casas.class).executeUpdate();
+        em.createNativeQuery(comando).executeUpdate();
         et.commit();
         em.close();
     }
@@ -194,8 +199,11 @@ public class Conectar {
         EntityTransaction et = em.getTransaction();
         et.begin();
         String comando = "DELETE FROM PROPIETARIOS WHERE ID_DNI_PROPIETARIOS = '"+dni+"'";
+        System.out.println("Hola");
         em.createNativeQuery(comando, Propietarios.class).executeUpdate();
+        System.out.println("Adios");
         et.commit();
+        System.out.println("Adosito");
         em.close();
      }
     
@@ -204,7 +212,7 @@ public class Conectar {
         EntityTransaction et = em.getTransaction();
         et.begin();
         String comando = "DELETE FROM CASAS WHERE ID_CASA = "+id;
-        em.createNativeQuery(comando).executeUpdate();
+        em.createNativeQuery(comando, Casas.class).executeUpdate();
         et.commit();
         em.close();
     }

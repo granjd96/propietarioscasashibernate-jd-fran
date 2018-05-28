@@ -278,7 +278,11 @@ public class FXMLController implements Initializable {
         txtPrecio.setDisable(false);
         btnCasaAceptar.setVisible(true);
         btnCasaCancelar.setVisible(true);
-
+        btnAnteriorPropietario.setVisible(false);
+        btnSiguientePropietario.setVisible(false);
+        borrarCasa = false;
+        
+        agregarCasa = false;
     }
 
     //ListView<HashMap<String, Casa>> casasPropietario;
@@ -430,6 +434,9 @@ public class FXMLController implements Initializable {
         cbxAscensor.setSelected(false);
         cbxGaraje.setSelected(false);
         agregarCasa = true;
+        borrarCasa = false;
+        modificarCasa = false;
+       
     }
 
     boolean borrarCasa = false;
@@ -438,6 +445,11 @@ public class FXMLController implements Initializable {
     private void btnBorrarCasaOnClick(ActionEvent event) {
         btnCasaAceptar.setVisible(true);
         btnCasaCancelar.setVisible(true);
+        btnAnteriorPropietario.setVisible(false);
+        btnSiguientePropietario.setVisible(false);
+        borrarCasa = true;
+        modificarCasa = false;
+        agregarCasa = false;
     }
 
     @FXML
@@ -456,6 +468,7 @@ public class FXMLController implements Initializable {
             extraerCasas();
             posicionCasa = casasH.getItems().size() - 1;
             mostrarCasas();
+            
 
         }
         if (modificarCasa) {
@@ -470,6 +483,7 @@ public class FXMLController implements Initializable {
             casasH = new ListView<Casas>();
             extraerCasas();
             mostrarCasas();
+            
         }
         if (borrarCasa) {
             int id = Integer.parseInt(txtID.getText());
@@ -479,7 +493,12 @@ public class FXMLController implements Initializable {
             extraerCasas();
             posicionCasa = casasH.getItems().size() - 1;
             mostrarCasas();
+            btnAnteriorCasa.setVisible(true);
+            btnSiguienteCasa.setVisible(true);
         }
+            borrarCasa = false;
+            modificarCasa = false;
+            agregarCasa = false;
         deshabilitarCasa();
     }
 
