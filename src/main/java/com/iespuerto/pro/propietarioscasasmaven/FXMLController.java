@@ -278,6 +278,8 @@ public class FXMLController implements Initializable {
         txtPrecio.setDisable(false);
         btnCasaAceptar.setVisible(true);
         btnCasaCancelar.setVisible(true);
+        cbxAscensor.setDisable(false);
+        cbxGaraje.setDisable(false);
         btnAnteriorPropietario.setVisible(false);
         btnSiguientePropietario.setVisible(false);
         borrarCasa = false;
