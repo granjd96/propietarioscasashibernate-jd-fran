@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author granj
+ * @author José David González Díaz
  */
 @Entity
 @Table(name = "PROPIETARIOS")

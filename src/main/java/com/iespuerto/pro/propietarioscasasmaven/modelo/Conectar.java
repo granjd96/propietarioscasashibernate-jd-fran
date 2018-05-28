@@ -14,7 +14,7 @@ import javax.persistence.Persistence;
 
 /**
  *
- * @author granj
+ * @author José David González Díaz
  */
 public class Conectar {
 
